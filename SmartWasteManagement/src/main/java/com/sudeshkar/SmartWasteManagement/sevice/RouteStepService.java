@@ -2,9 +2,14 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 
 import java.util.List;
 
-import com.sudeshkar.SmartWasteManagement.model.RouteStep;
+import com.sudeshkar.SmartWasteManagement.dto.CreateRouteStepRequestDto;
+import com.sudeshkar.SmartWasteManagement.dto.RouteStepResponseDto;
 
 public interface RouteStepService {
-	RouteStep createStep(Long routeId, Long binId, int order, String note);
-    List<RouteStep> getStepsByRoute(Long routeId);
+	RouteStepResponseDto createStep(
+            Long routeId,
+            CreateRouteStepRequestDto request
+    );
+
+    List<RouteStepResponseDto> getStepsByRoute(Long routeId);
 }

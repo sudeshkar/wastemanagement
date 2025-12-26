@@ -2,9 +2,14 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 
 import java.util.List;
 
-import com.sudeshkar.SmartWasteManagement.model.RouteAssignment;
+import com.sudeshkar.SmartWasteManagement.dto.CreateRouteAssignmentRequestDto;
+import com.sudeshkar.SmartWasteManagement.dto.RouteAssignmentResponseDto;
 
 public interface RouteAssignmentService {
-	RouteAssignment assignRoute(Long routeId, Long vehicleId);
-    List<RouteAssignment> getAssignmentsByRoute(Long routeId);
+	RouteAssignmentResponseDto assignRoute(
+            Long routeId,
+            CreateRouteAssignmentRequestDto request
+    );
+
+    List<RouteAssignmentResponseDto> getAssignmentsByRoute(Long routeId);
 }

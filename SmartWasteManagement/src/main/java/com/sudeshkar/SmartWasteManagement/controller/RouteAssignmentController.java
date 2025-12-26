@@ -6,11 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sudeshkar.SmartWasteManagement.model.RouteAssignment;
+import com.sudeshkar.SmartWasteManagement.dto.CreateRouteAssignmentRequestDto;
+import com.sudeshkar.SmartWasteManagement.dto.RouteAssignmentResponseDto;
 import com.sudeshkar.SmartWasteManagement.sevice.RouteAssignmentService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,17 +23,20 @@ public class RouteAssignmentController {
 	private final RouteAssignmentService assignmentService;
 	
 	@PostMapping("/{routeId}/assign")
-    public ResponseEntity<RouteAssignment> assignRoute(
+    public ResponseEntity<RouteAssignmentResponseDto> assignRoute(
             @PathVariable Long routeId,
-            @RequestParam Long vehicleId) {
+            @RequestBody CreateRouteAssignmentRequestDto request) {
+
         return ResponseEntity.ok(
-                assignmentService.assignRoute(routeId, vehicleId)
+                assignmentService.assignRoute(routeId, request)
         );
     }
 
+    
     @GetMapping("/{routeId}/assignments")
-    public ResponseEntity<List<RouteAssignment>> getAssignments(
+    public ResponseEntity<List<RouteAssignmentResponseDto>> getAssignments(
             @PathVariable Long routeId) {
+
         return ResponseEntity.ok(
                 assignmentService.getAssignmentsByRoute(routeId)
         );

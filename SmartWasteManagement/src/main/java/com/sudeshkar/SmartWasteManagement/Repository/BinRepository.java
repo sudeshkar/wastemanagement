@@ -10,4 +10,5 @@ import com.sudeshkar.SmartWasteManagement.model.Bin;
 @Repository
 public interface BinRepository extends JpaRepository<Bin,Long>{
 	 List<Bin> findByCurrentFillLevelGreaterThan(Double threshold);
+
 }

@@ -2,14 +2,19 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 
 import java.util.List;
 
-import com.sudeshkar.SmartWasteManagement.model.CollectionRoute;
+import com.sudeshkar.SmartWasteManagement.dto.CollectionRouteResponseDto;
+import com.sudeshkar.SmartWasteManagement.dto.createCollectionRouteDto;
 
 public interface RouteService {
-	CollectionRoute createRoute(CollectionRoute route);
-    List<CollectionRoute> getAllRoutes();
-    CollectionRoute getRouteById(Long id);
-    CollectionRoute updateRoute(Long id, CollectionRoute route);
-    void deleteRoute(Long id);
+	CollectionRouteResponseDto createRoute(createCollectionRouteDto dto);
 
-    CollectionRoute generateSmartRoute();
+    List<CollectionRouteResponseDto> getAllRoutes();
+
+    CollectionRouteResponseDto getRouteById(Long routeId);
+
+    CollectionRouteResponseDto updateRoute(Long routeId, createCollectionRouteDto dto);
+
+    void deleteRoute(Long routeId);
+
+    CollectionRouteResponseDto generateSmartRoute();
 }
