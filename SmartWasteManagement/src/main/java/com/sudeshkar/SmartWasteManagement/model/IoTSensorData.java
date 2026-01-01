@@ -32,7 +32,6 @@ public class IoTSensorData {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", nullable = false)
-    @JsonBackReference
     private Device device;
     
     @PrePersist

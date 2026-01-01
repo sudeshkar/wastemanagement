@@ -6,11 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sudeshkar.SmartWasteManagement.RouteMapper;
 import com.sudeshkar.SmartWasteManagement.Repository.CollectionRouteRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.ZoneRepository;
+import com.sudeshkar.SmartWasteManagement.dto.AssignZoneToCollectionRDTO;
 import com.sudeshkar.SmartWasteManagement.dto.CollectionRouteResponseDto;
 import com.sudeshkar.SmartWasteManagement.dto.createCollectionRouteDto;
+import com.sudeshkar.SmartWasteManagement.mapper.RouteMapper;
 import com.sudeshkar.SmartWasteManagement.model.CollectionRoute;
 import com.sudeshkar.SmartWasteManagement.model.Zone;
 
@@ -20,17 +21,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class RouteServiceImpl implements RouteService{
+	
 	private final CollectionRouteRepository routeRepository;
-    private final ZoneRepository zoneRepository;
     private  final SmartRouteEngine smartRouteEngine;
+    private final ZoneRepository zoneRepository;
 	@Override
 	public CollectionRouteResponseDto createRoute(createCollectionRouteDto dto) {
-		Zone zone = zoneRepository.findById(dto.getZoneId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Zone not found with id: " + dto.getZoneId()));
+		
 
         CollectionRoute route = RouteMapper.toEntity(dto);
-        route.setZone(zone);
+         
 
         CollectionRoute savedRoute = routeRepository.save(route);
 
@@ -59,14 +59,11 @@ public class RouteServiceImpl implements RouteService{
                 .orElseThrow(() ->
                         new IllegalArgumentException("Route not found with id: " + routeId));
 
-        Zone zone = zoneRepository.findById(dto.getZoneId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Zone not found with id: " + dto.getZoneId()));
+        
 
         existingRoute.setRouteName(dto.getRouteName());
         existingRoute.setDescription(dto.getDescription());
-        existingRoute.setZone(zone);
-
+        
         CollectionRoute updatedRoute = routeRepository.save(existingRoute);
 
         return RouteMapper.toDto(updatedRoute);
@@ -88,6 +85,24 @@ public class RouteServiceImpl implements RouteService{
 	    CollectionRoute savedRoute = routeRepository.save(smartRoute);
 
 	    return RouteMapper.toDto(savedRoute);
+	}
+	
+	
+	@Override
+	public String assignZone(AssignZoneToCollectionRDTO dto) {
+		 Zone zone = zoneRepository.findById(dto.getZoneId())
+				 .orElseThrow(()->new RuntimeException("Zone Not found with ID "+dto.getZoneId()));
+		 
+		 CollectionRoute route = routeRepository.findById(dto.getRouteId())
+	                .orElseThrow(() ->
+	                        new IllegalArgumentException("Route not found with id: " + dto.getRouteId()));
+		 
+		 zone.getRoutes().add(route);
+		 route.setZone(zone);
+		 routeRepository.save(route);
+		 return "Assigned Sucessfully";
+		 
+		 
 	}
 
     

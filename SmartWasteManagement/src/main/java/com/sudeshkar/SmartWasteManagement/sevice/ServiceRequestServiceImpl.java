@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.sudeshkar.SmartWasteManagement.ServiceRequestMapper;
 import com.sudeshkar.SmartWasteManagement.Enum.RequestStatus;
 import com.sudeshkar.SmartWasteManagement.Repository.BinRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.ServiceRequestRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.UserRepository;
 import com.sudeshkar.SmartWasteManagement.dto.CreateServiceRequestDto;
 import com.sudeshkar.SmartWasteManagement.dto.ServiceRequestDto;
+import com.sudeshkar.SmartWasteManagement.mapper.ServiceRequestMapper;
 import com.sudeshkar.SmartWasteManagement.model.Bin;
 import com.sudeshkar.SmartWasteManagement.model.ServiceRequest;
 import com.sudeshkar.SmartWasteManagement.model.User;

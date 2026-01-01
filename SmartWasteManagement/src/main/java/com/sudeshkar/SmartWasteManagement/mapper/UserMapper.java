@@ -1,4 +1,4 @@
-package com.sudeshkar.SmartWasteManagement;
+package com.sudeshkar.SmartWasteManagement.mapper;
 import com.sudeshkar.SmartWasteManagement.dto.UserDto;
 import com.sudeshkar.SmartWasteManagement.model.User;
 

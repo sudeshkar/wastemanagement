@@ -6,12 +6,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sudeshkar.SmartWasteManagement.RouteAssignmentMapper;
 import com.sudeshkar.SmartWasteManagement.Repository.CollectionRouteRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.RouteAssignmentRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.VehicleRepository;
 import com.sudeshkar.SmartWasteManagement.dto.CreateRouteAssignmentRequestDto;
 import com.sudeshkar.SmartWasteManagement.dto.RouteAssignmentResponseDto;
+import com.sudeshkar.SmartWasteManagement.mapper.RouteAssignmentMapper;
 import com.sudeshkar.SmartWasteManagement.model.CollectionRoute;
 import com.sudeshkar.SmartWasteManagement.model.RouteAssignment;
 import com.sudeshkar.SmartWasteManagement.model.Vehicle;
@@ -55,6 +55,8 @@ public class RouteAssignmentServiceImpl implements RouteAssignmentService{
         assignment.setVehicle(vehicle);
         assignment.setAssignedDate(LocalDate.now());
         assignment.setStatus("ASSIGNED");
+        
+        
 
         
         RouteAssignment saved = assignmentRepo.save(assignment);

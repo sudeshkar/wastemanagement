@@ -6,11 +6,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sudeshkar.SmartWasteManagement.AlertMapper;
 import com.sudeshkar.SmartWasteManagement.Enum.AlertType;
 import com.sudeshkar.SmartWasteManagement.Repository.AlertRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.BinRepository;
 import com.sudeshkar.SmartWasteManagement.dto.AlertDto;
+import com.sudeshkar.SmartWasteManagement.dto.CreateAlertRequestDTO;
+import com.sudeshkar.SmartWasteManagement.mapper.AlertMapper;
 import com.sudeshkar.SmartWasteManagement.model.Alert;
 import com.sudeshkar.SmartWasteManagement.model.Bin;
 
@@ -49,6 +50,7 @@ public class AlertServiceImpl implements AlertService{
 
         alert.setAcknowledged(true);
         alert.setAcknowledgedAt(LocalDateTime.now());
+        alertRepository.save(alert);
 
         return AlertMapper.toDto(alert);
     }
@@ -68,5 +70,46 @@ public class AlertServiceImpl implements AlertService{
 
         alertRepository.save(alert);
     }
+
+	@Override
+	public AlertDto getById(Long id) {
+		 Alert alert =alertRepository.findById(id)
+				 .orElseThrow(()->new RuntimeException("Alert Not found with ID"+id));
+		 return AlertMapper.toDto(alert);
+	}
+
+	@Override
+	public void deleteById(Long id) {
+		Alert alert =alertRepository.findById(id)
+				 .orElseThrow(()->new RuntimeException("Alert Not found with ID "+id +" Unable to Delete"));
+		alertRepository.delete(alert);
+		
+		
+	}
+
+	@Override
+	public void updateAlert(Long alertId, CreateAlertRequestDTO dto) {
+		Alert existingAlert = alertRepository.findById(alertId)
+                .orElseThrow(() -> new RuntimeException("Alert not found for id: " + alertId));
+		
+		if (dto.getMessage()!=null) {
+			existingAlert.setMessage(dto.getMessage());
+		}
+		
+		if (dto.getBinId()!=null) {
+			Bin bin = binRepository.findById(dto.getBinId())
+	                .orElseThrow(() -> new RuntimeException("Bin not found"));
+			existingAlert.setBin(bin);
+		}
+		if (dto.getAlertType()!=null) {
+			existingAlert.setType(dto.getAlertType());
+		}
+		
+		
+		alertRepository.save(existingAlert);
+		
+	}
+
+	 
 
 }

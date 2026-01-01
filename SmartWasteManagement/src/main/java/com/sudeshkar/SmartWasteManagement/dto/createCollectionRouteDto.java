@@ -9,5 +9,4 @@ import lombok.Data;
 public class createCollectionRouteDto {
 	private String routeName;
     private String description;
-    private Long zoneId;
 }

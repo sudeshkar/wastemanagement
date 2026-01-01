@@ -1,5 +1,6 @@
 package com.sudeshkar.SmartWasteManagement.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,23 +19,35 @@ public class IoTSimulatorController {
 	private final IoTSimulatorService simulatorService;
 	
 	
-    @PostMapping("/random-reading")
-    public ResponseEntity<String> generateOne() {
-        simulatorService.sendRandomReading();
-        return ResponseEntity.ok("✅ One simulated sensor reading generated");
-    }
+	@PostMapping("/random-reading")
+	public ResponseEntity<String> generateOne() {
+	    simulatorService.generateAndSaveReading();
+	    return ResponseEntity.ok("✅ One simulated sensor reading generated");
+	}
+
 
     @PostMapping("/start")
     public ResponseEntity<String> start() {
-        simulatorService.startSimulator();
-        return ResponseEntity.ok("▶ IoT Simulator started");
+    	try {
+    		simulatorService.startSimulator();
+            return ResponseEntity.ok("▶ IoT Simulator started");
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.BAD_REQUEST);
+
+		}
+        
     }
 
     
     @PostMapping("/stop")
     public ResponseEntity<String> stop() {
-        simulatorService.stopSimulator();
-        return ResponseEntity.ok("⏹ IoT Simulator stopped");
+    	try {
+    		 simulatorService.stopSimulator();
+    	        return ResponseEntity.ok("⏹ IoT Simulator stopped");
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+       
     }
     
     @GetMapping("/status")

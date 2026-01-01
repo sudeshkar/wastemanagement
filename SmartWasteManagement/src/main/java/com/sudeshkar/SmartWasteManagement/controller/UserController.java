@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sudeshkar.SmartWasteManagement.UserMapper;
 import com.sudeshkar.SmartWasteManagement.Enum.Role;
 import com.sudeshkar.SmartWasteManagement.dto.UserDto;
+import com.sudeshkar.SmartWasteManagement.mapper.UserMapper;
 import com.sudeshkar.SmartWasteManagement.model.User;
 import com.sudeshkar.SmartWasteManagement.sevice.UserService;
 

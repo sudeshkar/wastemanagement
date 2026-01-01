@@ -1,9 +1,7 @@
 package com.sudeshkar.SmartWasteManagement.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,155 +11,124 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sudeshkar.SmartWasteManagement.model.Bin;
+import com.sudeshkar.SmartWasteManagement.dto.AssignDeviceToBinDTO;
+import com.sudeshkar.SmartWasteManagement.dto.AssignZoneToBinDTO;
+import com.sudeshkar.SmartWasteManagement.dto.BinRequestDTO;
+import com.sudeshkar.SmartWasteManagement.dto.BinResponseDTO;
+import com.sudeshkar.SmartWasteManagement.dto.MarkBinEmptyRequestDTO;
+import com.sudeshkar.SmartWasteManagement.dto.UpdateBinRequestDTO;
 import com.sudeshkar.SmartWasteManagement.sevice.BinService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/bins")
+@RequiredArgsConstructor
 public class BinController {
-	@Autowired
-	private BinService binService;
-	@GetMapping
-	public ResponseEntity<List<Bin>> getAllBins(){
-		List<Bin> bins= binService.getAllBins();
-		return new ResponseEntity<List<Bin>>(bins,HttpStatus.OK);
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getBinById(@PathVariable Long id){
-		try {
-			Bin bin=binService.getBinById(id);
-			 return ResponseEntity.ok(bin);
-			 
+
+   
+    private final BinService binService;
+
+    @GetMapping
+    public ResponseEntity<List<BinResponseDTO>> getAllBins() {
+        return ResponseEntity.ok(binService.getAllBins());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getBinById(@PathVariable Long id) {
+    	try {
+            return ResponseEntity.ok(binService.getBinById(id));
+
 		} catch (Exception e) {
-			return new ResponseEntity<String>("bin Not found ",HttpStatus.NOT_FOUND);
-		}	
-		 
-		 
-	}
-	
-	@PostMapping
-	public ResponseEntity<String> addBin(@RequestBody Map<String, String> body) {
-	    String locationLatStr = body.get("location_lat");
-	    String locationLngStr = body.get("location_lng");
-	    String capacityStr = body.get("capacity");
-	    String current_fill_levelStr = body.get("current_fill_level");
-	    String status = body.get("status");
-	   
-	    
-	   
-	    if (locationLatStr == null || locationLngStr == null ||capacityStr == null||current_fill_levelStr == null||status == null) {
-	        return new ResponseEntity<>("Missing required fields", HttpStatus.BAD_REQUEST);
-	    }
-
-	   
-	    Double location_lat = null;
-	    Double location_lng = null;
-	    Double capacity = null;
-	    Double current_fill_level = null;
-	    
-	    try {
-	        location_lat = Double.valueOf(locationLatStr);
-	        location_lng = Double.valueOf(locationLngStr);
-	        capacity = Double.valueOf(capacityStr);
-	        current_fill_level = Double.valueOf(current_fill_levelStr);
-	    } catch (NumberFormatException e) {
-	        return new ResponseEntity<>("Invalid number format for location", HttpStatus.BAD_REQUEST);
-	    }
-
-	   
-
-	    
-	    Bin bin = new Bin();
-	    bin.setLocation_lat(location_lat);
-	    bin.setLocation_lng(location_lng);
-	    bin.setCapacity(capacity);
-	    bin.setCurrentFillLevel(current_fill_level);
-	    
-	    binService.createbin(bin);  
-
-	    return new ResponseEntity<>("Successfully created", HttpStatus.CREATED);
-	}
-
-	
-	@PutMapping("/{id}")
-	public ResponseEntity<String> updateBin(
-	        @PathVariable Long id,
-	        @RequestBody Map<String, String> body) {
-
-	    
-	    Bin existingBin = binService.getBinById(id);
-	    if (existingBin == null) {
-	        return new ResponseEntity<>("Bin not found", HttpStatus.NOT_FOUND);
-	    }
-
-	
-	    String locationLatStr = body.get("location_lat");
-	    String locationLngStr = body.get("location_lng");
-	    String capacityStr = body.get("capacity");
-	    String current_fill_levelStr = body.get("current_fill_level");
-	    String status = body.get("status");
-
-	   
-	    
-	    Double location_lat;
-	    Double location_lng;
-	    Double capacity;
-	    Double current_fill_level;
-
-	    try {
-	        location_lat = Double.valueOf(locationLatStr);
-	        location_lng = Double.valueOf(locationLngStr);
-	        capacity = Double.valueOf(capacityStr);
-	        current_fill_level = Double.valueOf(current_fill_levelStr);
-	    } catch (NumberFormatException e) {
-	        return new ResponseEntity<>("Invalid number format", HttpStatus.BAD_REQUEST);
-	    }
-
-	     
-	    existingBin.setLocation_lat(location_lat);
-	    existingBin.setLocation_lng(location_lng);
-	    existingBin.setCapacity(capacity);
-	    existingBin.setCurrentFillLevel(current_fill_level);
-	    existingBin.setStatus(status);
-
-	     
-	    binService.createbin(existingBin);
-
-	    return new ResponseEntity<>("Bin updated successfully", HttpStatus.OK);
-	}
-
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteBin(@PathVariable Long id){
-		if (binService.existsById(id)) {
-			binService.deleteBin(id);
-			return new ResponseEntity<>("Deleted Successfully",HttpStatus.OK);
+			return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.CONFLICT);
 		}
-		return new ResponseEntity<>("Failed to delete",HttpStatus.NOT_FOUND);
-	}
-	
-	@PostMapping("/{id}/assign-device")
-	public ResponseEntity<?> assignDevice(@PathVariable Long id,@RequestParam String deviceId) {
+    }
 
-	    Bin updatedBin = binService.assignDevice(id, deviceId);
-	    return ResponseEntity.ok("Device assigned successfully to bin " + id);
-	}
-	
-	@PostMapping("/{id}/mark-empty")
-	public ResponseEntity<?> markEmpty(
-	        @PathVariable Long id,
-	        @RequestParam Long vehicleId,
-	        @RequestParam double wasteWeight,
-	        @RequestParam String notes) {
-	    
-	    Bin updatedBin = binService.markEmpty(id, vehicleId, wasteWeight, notes);
-	    return ResponseEntity.ok(updatedBin);
-	}
+    @PostMapping
+    public ResponseEntity<String> createBin(@RequestBody BinRequestDTO binDTO) {
+    	try {
+    		 return new ResponseEntity<String>(binService.createBin(binDTO), HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.CONFLICT);
+		}
+       
+    }
+    
+    @PutMapping("{id}")
+    public ResponseEntity<?> updateById(@PathVariable Long id,@RequestBody UpdateBinRequestDTO updateBinDTO){
+    	try {
+    		return ResponseEntity.ok(binService.updateBin(id, updateBinDTO));
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.CONFLICT);
+		}
+    	
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBin(@PathVariable Long id) {
+    	try {
+    		binService.deleteBin(id);
+            return ResponseEntity.ok("Deleted successfully");
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.CONFLICT);
+		}
+        
+    }
+    
+    @PostMapping("/assign-device")
+    public ResponseEntity<?> assignDevice(@RequestBody AssignDeviceToBinDTO dto) {
+         
+        BinResponseDTO binDTO = binService.assignDevice(dto);
 
+         try {
+        	 if (binDTO != null) {
+                 return ResponseEntity.ok(binDTO);
+             } else {
+                 return ResponseEntity.notFound().build();
+             }
+		} catch (Exception e) {
+			 return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+        
+    }
+    
+    @PostMapping("/assign-zone")
+    public ResponseEntity<?> assignZone(@RequestBody AssignZoneToBinDTO dto){
+    	try {
+			return new ResponseEntity<BinResponseDTO>(binService.assignZoneToBin(dto),HttpStatus.OK);
+		} catch (Exception e) {
+			 return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.CONFLICT);
+		}
+    }
+    
+    @PostMapping("/mark-empty")
+    public ResponseEntity<?> markEmpty(@RequestBody MarkBinEmptyRequestDTO dto) {
 
+         try {
+        	 BinResponseDTO binDTO = binService.markEmpty(dto.getBinId(), dto.getVehicleId(), dto.getWasteWeight(), dto.getNotes());
+
+             
+             if (binDTO != null) {
+                 return ResponseEntity.ok(binDTO);
+             } else {
+                 return ResponseEntity.notFound().build();
+             }
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Error "+e.getMessage(),HttpStatus.CONFLICT);
+		}
+        
+    }
+    
+    @GetMapping("/{binId}/exists")
+    public ResponseEntity<Void> existsById(@PathVariable Long binId) {
+         
+        if (binService.existsById(binId)) {
+            return ResponseEntity.ok().build();  
+        } else {
+            return ResponseEntity.notFound().build();  
+        }
+    }
 }
+

@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.sudeshkar.SmartWasteManagement.DriverMapper;
-import com.sudeshkar.SmartWasteManagement.VehicleMapper;
 import com.sudeshkar.SmartWasteManagement.Enum.VehicleStatus;
 import com.sudeshkar.SmartWasteManagement.Repository.VehicleRepository;
+import com.sudeshkar.SmartWasteManagement.dto.CreateVehicleDTO;
 import com.sudeshkar.SmartWasteManagement.dto.DriverResponseDto;
 import com.sudeshkar.SmartWasteManagement.dto.VehicleResponseDto;
+import com.sudeshkar.SmartWasteManagement.mapper.DriverMapper;
+import com.sudeshkar.SmartWasteManagement.mapper.VehicleMapper;
 import com.sudeshkar.SmartWasteManagement.model.Driver;
 import com.sudeshkar.SmartWasteManagement.model.Vehicle;
 
@@ -22,12 +23,7 @@ public class VehicleServiceImpl implements VehicleService{
 	
 	private final VehicleRepository vehicleRepository;
 
-	@Override
-	public VehicleResponseDto createVehicle(Vehicle vehicle) {
-		   vehicleRepository.save(vehicle);
-		   return VehicleMapper.toDto(vehicle);
-	}
-
+	
 	@Override
 	public List<VehicleResponseDto> getAllVehicles() {
 		
@@ -65,6 +61,14 @@ public class VehicleServiceImpl implements VehicleService{
 			return "Unable to Delete Vehicle "+id;
 		}
 		 
+		
+	}
+
+	@Override
+	public void createVehicle(CreateVehicleDTO dto) {
+		Vehicle vehicle = VehicleMapper.toEntity(dto);
+		vehicleRepository.save(vehicle);
+		
 		
 	}
 

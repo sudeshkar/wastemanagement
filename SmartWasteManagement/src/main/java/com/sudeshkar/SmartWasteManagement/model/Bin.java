@@ -45,7 +45,6 @@ public class Bin {
 	private Zone zone;
 	
 	@OneToOne(mappedBy = "bin", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonBackReference
 	private Device device;
 
 	

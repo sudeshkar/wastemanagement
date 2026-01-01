@@ -29,8 +29,8 @@ public class VehicleController {
 	private final VehicleService vehicleService;
 	
 	@PostMapping
-    public ResponseEntity<VehicleResponseDto> createVehicle(@RequestBody Vehicle vehicle) {
-        return ResponseEntity.ok(vehicleService.createVehicle(vehicle));
+    public ResponseEntity<String> createVehicle(@RequestBody Vehicle vehicle) {
+        return ResponseEntity.ok("Created Successfully");
     }
 
      

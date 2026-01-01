@@ -1,4 +1,4 @@
-package com.sudeshkar.SmartWasteManagement;
+package com.sudeshkar.SmartWasteManagement.mapper;
 
 import org.springframework.stereotype.Component;
 
@@ -10,12 +10,11 @@ import com.sudeshkar.SmartWasteManagement.model.Vehicle;
 
 @Component
 public class DriverMapper {
-	public static Driver toEntity(CreateDriverRequestDto dto, User user, Vehicle vehicle) {
+	public static Driver toEntity(CreateDriverRequestDto dto, User user) {
         Driver driver = new Driver();
         driver.setUser(user);
         driver.setLicenseNumber(dto.getLicenseNumber());
         driver.setPhoneNumber(dto.getPhoneNumber());
-        driver.setAssignedVehicle(vehicle);
         return driver;
     }
 

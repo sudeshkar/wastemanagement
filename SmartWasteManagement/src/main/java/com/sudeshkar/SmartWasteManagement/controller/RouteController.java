@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sudeshkar.SmartWasteManagement.dto.AssignZoneToCollectionRDTO;
 import com.sudeshkar.SmartWasteManagement.dto.CollectionRouteResponseDto;
 import com.sudeshkar.SmartWasteManagement.dto.createCollectionRouteDto;
 import com.sudeshkar.SmartWasteManagement.sevice.RouteService;
@@ -61,6 +62,16 @@ public class RouteController {
     public ResponseEntity<Void> deleteRoute(@PathVariable Long id) {
         routeService.deleteRoute(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @PostMapping("/assignZone/{zoneId}")
+    public ResponseEntity<String> assignZone(@RequestBody AssignZoneToCollectionRDTO dto){
+    	try {
+			routeService.assignZone(dto);
+			return new ResponseEntity<String>("Assigned Successfully",HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("Assigned Failed "+e.getMessage(),HttpStatus.CONFLICT);
+		}
     }
 
     // SMART ROUTE GENERATION

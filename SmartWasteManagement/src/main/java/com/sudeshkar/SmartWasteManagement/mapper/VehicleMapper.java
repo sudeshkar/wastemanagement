@@ -1,7 +1,9 @@
-package com.sudeshkar.SmartWasteManagement;
+package com.sudeshkar.SmartWasteManagement.mapper;
 
 import org.springframework.stereotype.Component;
 
+import com.sudeshkar.SmartWasteManagement.Enum.VehicleStatus;
+import com.sudeshkar.SmartWasteManagement.dto.CreateVehicleDTO;
 import com.sudeshkar.SmartWasteManagement.dto.VehicleResponseDto;
 import com.sudeshkar.SmartWasteManagement.model.Vehicle;
 
@@ -23,4 +25,11 @@ public class VehicleMapper {
 
         return dto;
     }
+	
+	public static Vehicle toEntity(CreateVehicleDTO dto) {
+		Vehicle vehicle = new Vehicle();
+		vehicle.setVehicleNumber(dto.getVehicleNumber());
+		vehicle.setStatus(VehicleStatus.AVAILABLE);
+		return vehicle;
+	}
 }

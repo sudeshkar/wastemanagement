@@ -2,33 +2,21 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.sudeshkar.SmartWasteManagement.dto.AssignDeviceToBinDTO;
+import com.sudeshkar.SmartWasteManagement.dto.DeviceRequestDTO;
+import com.sudeshkar.SmartWasteManagement.dto.DeviceResponseDTO;
 
-import com.sudeshkar.SmartWasteManagement.Repository.DeviceRepository;
-import com.sudeshkar.SmartWasteManagement.model.Device;
-
-@Service
-public class DeviceService {
-	@Autowired	
-	private DeviceRepository deviceRepository;
+public interface DeviceService {
 	
-	public List<Device> getAllDevices(){
-		return deviceRepository.findAll();
-	}
+	 	List<DeviceResponseDTO> getAllDevices();
 
-	public Device getById(Long id) {
-		 return deviceRepository.findById(id).orElseThrow(()-> new RuntimeException("Device Not Found"));
-	}
+	 	DeviceResponseDTO  getById(Long id);
 
-	public boolean existById(Long id) {
-		 return deviceRepository.existsById(id);
-	}
+	    boolean existById(Long id);
 
-	public void addDevice(Device device) {
-		deviceRepository.save(device);
-		
-	}
-
-	
+	    void addDevice(DeviceRequestDTO dto);
+	    
+	    String updateDevice(Long deviceId,DeviceRequestDTO dto);
+	    
+	   DeviceResponseDTO assignDeviceToBin(AssignDeviceToBinDTO dto);
 }

@@ -7,5 +7,4 @@ public class CreateDriverRequestDto {
 	private Long userId;
     private String licenseNumber;
     private String phoneNumber;
-    private Long assignedVehicleId; 
 }

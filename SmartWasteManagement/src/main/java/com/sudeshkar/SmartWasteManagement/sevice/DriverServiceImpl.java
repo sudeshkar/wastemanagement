@@ -5,13 +5,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.sudeshkar.SmartWasteManagement.DriverMapper;
 import com.sudeshkar.SmartWasteManagement.Enum.Role;
 import com.sudeshkar.SmartWasteManagement.Repository.DriverRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.UserRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.VehicleRepository;
+import com.sudeshkar.SmartWasteManagement.dto.AssignVehicleRequestDTO;
 import com.sudeshkar.SmartWasteManagement.dto.CreateDriverRequestDto;
 import com.sudeshkar.SmartWasteManagement.dto.DriverResponseDto;
+import com.sudeshkar.SmartWasteManagement.mapper.DriverMapper;
 import com.sudeshkar.SmartWasteManagement.model.Driver;
 import com.sudeshkar.SmartWasteManagement.model.User;
 import com.sudeshkar.SmartWasteManagement.model.Vehicle;
@@ -27,7 +28,7 @@ public class DriverServiceImpl implements DriverService{
 	private final VehicleRepository vehicleRepository;
 	
 	@Override
-	public DriverResponseDto createDriver(CreateDriverRequestDto dto) {
+	public String createDriver(CreateDriverRequestDto dto) {
 		
 		User user = userRepository.findById(dto.getUserId()).orElseThrow(()-> new RuntimeException("User Not Found"));
 		if (user.getRole() != Role.DRIVER) {
@@ -39,12 +40,10 @@ public class DriverServiceImpl implements DriverService{
 	        throw new RuntimeException("Driver profile already exists for this user");
 	    }
 
-		Vehicle vehicle = vehicleRepository.findById(dto.getAssignedVehicleId()).orElseThrow(()-> new RuntimeException("Vehicle not Found"));
-		Driver driver = DriverMapper.toEntity(dto, user, vehicle);
+		Driver driver = DriverMapper.toEntity(dto, user);
 		driverRepository.save(driver);
 		
-		DriverResponseDto driverResponseDto = DriverMapper.toDTO(driver);
-		return driverResponseDto;
+		return "Successfully created ";
 		
 		
 		
@@ -69,10 +68,11 @@ public class DriverServiceImpl implements DriverService{
 	}
 
 	@Override
-	public DriverResponseDto assignVehicle(Long driverId, Long vehicleId) {
-		 Driver exDriver = driverRepository.findById(driverId).orElseThrow(()->new RuntimeException("Driver Not Found"));
-		Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(()-> new RuntimeException("Vehicle not Found"));
+	public DriverResponseDto assignVehicle(AssignVehicleRequestDTO dto) {
+		 Driver exDriver = driverRepository.findById(dto.getDriverId()).orElseThrow(()->new RuntimeException("Driver Not Found with ID "+dto.getDriverId()));
+		Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId()).orElseThrow(()-> new RuntimeException("Vehicle not Found with ID "+dto.getVehicleId()));
 		 exDriver.setAssignedVehicle(vehicle);
+		 vehicle.setDriver(exDriver);
 		 driverRepository.save(exDriver);
 		 return DriverMapper.toDTO(exDriver);
 	}
@@ -80,14 +80,24 @@ public class DriverServiceImpl implements DriverService{
 	@Override
 	public DriverResponseDto removeVehicle(Long driverId) {
 	    Driver driver = driverRepository.findById(driverId)
-	            .orElseThrow(() -> new RuntimeException("Driver not found with ID: " + driverId));
+	            .orElseThrow(() ->
+	                    new RuntimeException("Driver not found with ID: " + driverId));
 
-	     
-	    driver.setAssignedVehicle(null);
+	    Vehicle vehicle = driver.getAssignedVehicle();
+
+	    if (vehicle == null) {
+	        throw new RuntimeException(
+	                "No vehicle assigned to driver with ID: " + driverId);
+	    }
 
 	    
+	    vehicle.setDriver(null);
+	    driver.setAssignedVehicle(null);
+
 	    driverRepository.save(driver);
+
 	    return DriverMapper.toDTO(driver);
 	}
+
 
 }

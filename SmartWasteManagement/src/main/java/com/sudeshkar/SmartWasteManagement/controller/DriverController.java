@@ -1,9 +1,6 @@
 package com.sudeshkar.SmartWasteManagement.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sudeshkar.SmartWasteManagement.dto.AssignVehicleRequestDTO;
 import com.sudeshkar.SmartWasteManagement.dto.CreateDriverRequestDto;
 import com.sudeshkar.SmartWasteManagement.dto.DriverResponseDto;
 import com.sudeshkar.SmartWasteManagement.sevice.DriverService;
@@ -27,11 +25,10 @@ public class DriverController {
 	private final DriverService driverService;
 	
 	@PostMapping
-    public ResponseEntity<?> createDriver(
-            @RequestBody CreateDriverRequestDto dto) {
+    public ResponseEntity<?> createDriver(@RequestBody CreateDriverRequestDto dto) {
 		try {
 			
-			return new ResponseEntity<DriverResponseDto>(driverService.createDriver(dto),HttpStatus.OK);
+			return new ResponseEntity<String>(driverService.createDriver(dto),HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage(),HttpStatus.CONFLICT);
 		}
@@ -62,13 +59,11 @@ public class DriverController {
     }
 
    
-    @PutMapping("/{driverId}/assign-vehicle/{vehicleId}")
-    public ResponseEntity<?> assignVehicle(
-            @PathVariable Long driverId,
-            @PathVariable Long vehicleId) {
+    @PutMapping("/assign-vehicle")
+    public ResponseEntity<?> assignVehicle(@RequestBody AssignVehicleRequestDTO dto) {
     	try {
     		return ResponseEntity.ok(
-                    driverService.assignVehicle(driverId, vehicleId)
+                    driverService.assignVehicle(dto)
             );
 		} catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage(),HttpStatus.CONFLICT);

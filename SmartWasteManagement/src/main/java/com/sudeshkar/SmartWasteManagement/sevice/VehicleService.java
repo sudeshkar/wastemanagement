@@ -5,13 +5,14 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 import java.util.List;
 
 import com.sudeshkar.SmartWasteManagement.Enum.VehicleStatus;
+import com.sudeshkar.SmartWasteManagement.dto.CreateVehicleDTO;
 import com.sudeshkar.SmartWasteManagement.dto.VehicleResponseDto;
 import com.sudeshkar.SmartWasteManagement.model.Vehicle;
 
 public interface VehicleService {
 
 
-	VehicleResponseDto createVehicle(Vehicle vehicle);
+	void createVehicle(CreateVehicleDTO dto);
 
 	List<VehicleResponseDto> getAllVehicles();
 

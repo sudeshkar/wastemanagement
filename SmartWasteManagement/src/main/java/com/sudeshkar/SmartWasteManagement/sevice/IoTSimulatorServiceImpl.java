@@ -2,6 +2,7 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sudeshkar.SmartWasteManagement.Enum.AlertType;
 import com.sudeshkar.SmartWasteManagement.Repository.DeviceRepository;
@@ -14,23 +15,30 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class IoTSimulatorServiceImpl implements IoTSimulatorService {
-	
-	private final DeviceRepository deviceRepository;
+
+    private final DeviceRepository deviceRepository;
     private final IoTSensorDataRepository sensorDataRepository;
     private final AlertService alertService;
 
     private volatile boolean running = false;
 
     @Override
-    @Scheduled(fixedRate = 5000) // every 5 seconds
+    @Scheduled(fixedRate = 5000)
     public void sendRandomReading() {
-
         if (!running) return;
+        generateAndSaveReading();
+    }
+
+    @Transactional
+    public void generateAndSaveReading() {
 
         Device device = deviceRepository.findFirstByActiveTrue()
                 .orElseThrow(() -> new RuntimeException("No active IoT device found"));
 
-        if (device.getBin() == null) return;
+        if (device.getBin() == null) {
+            System.out.println("❌ Active device has no bin assigned: " + device.getId());
+            return;
+        }
 
         double fillLevel = Math.random() * 100;
         double gasLevel = Math.random() * 100;
@@ -43,8 +51,6 @@ public class IoTSimulatorServiceImpl implements IoTSimulatorService {
         data.setTemperature(temperature);
 
         sensorDataRepository.save(data);
-
-        device.getBin().setCurrentFillLevel(fillLevel);
 
         if (fillLevel > 80) {
             alertService.createAlert(
@@ -77,5 +83,5 @@ public class IoTSimulatorServiceImpl implements IoTSimulatorService {
     public boolean isRunning() {
         return running;
     }
-
 }
+

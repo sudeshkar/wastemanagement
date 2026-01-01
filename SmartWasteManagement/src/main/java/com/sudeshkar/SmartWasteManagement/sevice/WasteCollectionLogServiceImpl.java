@@ -1,6 +1,7 @@
 package com.sudeshkar.SmartWasteManagement.sevice;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sudeshkar.SmartWasteManagement.Repository.BinRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.VehicleRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.WasteCollectionLogRepository;
+import com.sudeshkar.SmartWasteManagement.dto.CreateWasteCollectionReqDTO;
+import com.sudeshkar.SmartWasteManagement.dto.ResponseWasteCollectionDTO;
+import com.sudeshkar.SmartWasteManagement.mapper.WasteCollectionMapper;
 import com.sudeshkar.SmartWasteManagement.model.Bin;
 import com.sudeshkar.SmartWasteManagement.model.Vehicle;
 import com.sudeshkar.SmartWasteManagement.model.WasteCollectionLog;
@@ -26,35 +30,47 @@ public class WasteCollectionLogServiceImpl implements WasteCollectionLogService{
 
 	
     @Override
-    public WasteCollectionLog createLog(Long binId, Long vehicleId, double weight) {
+    public void createLog(CreateWasteCollectionReqDTO dto) {
 
-        Bin bin = binRepo.findById(binId)
+        Bin bin = binRepo.findById(dto.getBinId())
                 .orElseThrow(() -> new RuntimeException("Bin not found"));
 
-        Vehicle vehicle = vehicleRepo.findById(vehicleId)
+        Vehicle vehicle = vehicleRepo.findById(dto.getVehicleId())
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
         WasteCollectionLog log = new WasteCollectionLog();
         log.setBin(bin);
         log.setVehicle(vehicle);
-        log.setWasteWeight(weight);
+        log.setWasteWeight(dto.getWasteWeight());
+        log.setNotes(dto.getNotes());
         log.setCollectedAt(LocalDateTime.now());
 
+        logRepo.save(log);
         // reset bin
         bin.setCurrentFillLevel(0.0);
-
-        return logRepo.save(log);
+        bin.setStatus("EMPTY");
+        binRepo.save(bin);
+         
     }
 
     @Override
-    public List<WasteCollectionLog> getAllLogs() {
-        return logRepo.findAll();
+    public List<ResponseWasteCollectionDTO> getAllLogs() {
+        List<WasteCollectionLog> logs = logRepo.findAll();
+        List<ResponseWasteCollectionDTO> respondDtoLogs = new ArrayList<ResponseWasteCollectionDTO>();
+        
+        for (WasteCollectionLog wasteCollectionLog : logs) {
+			ResponseWasteCollectionDTO respondDtoLog = WasteCollectionMapper.toReponseDTO(wasteCollectionLog);
+			respondDtoLogs.add(respondDtoLog);
+		}
+        return respondDtoLogs;
     }
 
     @Override
-    public WasteCollectionLog getLogById(Long id) {
-        return logRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Log not found"));
+    public ResponseWasteCollectionDTO getLogById(Long id) {
+        WasteCollectionLog log = logRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Log not found With ID "+id));
+        
+        return WasteCollectionMapper.toReponseDTO(log);
     }
 
 }

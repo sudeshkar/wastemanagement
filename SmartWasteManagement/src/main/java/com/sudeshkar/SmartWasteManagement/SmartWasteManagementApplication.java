@@ -1,3 +1,4 @@
+
 package com.sudeshkar.SmartWasteManagement;
 
 import org.springframework.boot.SpringApplication;

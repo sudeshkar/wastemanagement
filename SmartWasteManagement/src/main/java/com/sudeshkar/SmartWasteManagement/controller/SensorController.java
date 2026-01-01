@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sudeshkar.SmartWasteManagement.dto.SensorReadingRequestDTO;
-import com.sudeshkar.SmartWasteManagement.model.IoTSensorData;
+import com.sudeshkar.SmartWasteManagement.dto.SensorReadingResponseDTO;
 import com.sudeshkar.SmartWasteManagement.sevice.SensorService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,14 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/sensors")
 @RequiredArgsConstructor
 public class SensorController {
-	private final SensorService sensorService;
-	
-	@PostMapping("/reading")
-    public ResponseEntity<String> receiveSensorReading(@RequestBody SensorReadingRequestDTO dto) {
 
-        if (dto == null || dto.getDeviceId() == null) {
+    private final SensorService sensorService;
+
+    @PostMapping("/reading")
+    public ResponseEntity<String> receiveSensorReading(
+            @RequestBody SensorReadingRequestDTO dto) {
+
+        if (dto == null || dto.getId() == null) {
             return ResponseEntity.badRequest()
                     .body("Invalid sensor payload");
         }
@@ -45,43 +48,48 @@ public class SensorController {
                     .body(e.getMessage());
         }
     }
-	
-	@GetMapping("/recent")
-    public ResponseEntity<List<IoTSensorData>> getRecentReadings() {
+
+    @GetMapping("/recent")
+    public ResponseEntity<List<SensorReadingResponseDTO>> getRecentReadings() {
         return ResponseEntity.ok(sensorService.getRecentReadings());
     }
-	
-	@GetMapping("/bin/{binId}")
-	public ResponseEntity<List<IoTSensorData>> getSensorDataByBin(@PathVariable Long binId) {
 
-	    List<IoTSensorData> data = sensorService.getSensorDataByBin(binId);
+    @GetMapping("/bin/{binId}")
+    public ResponseEntity<List<SensorReadingResponseDTO>> getSensorDataByBin(
+            @PathVariable Long binId) {
 
-	    if (data.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
-	    }
+        List<SensorReadingResponseDTO> data =
+                sensorService.getSensorDataByBin(binId);
 
-	    return ResponseEntity.ok(data);
-	}
-	
-	@GetMapping("/bin/{binId}/range")
-	public ResponseEntity<Page<IoTSensorData>> getSensorDataByBinWithRange(
-	        @PathVariable Long binId,
-	        @RequestParam String start,
-	        @RequestParam String end,
-	        @RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "10") int size) {
+        if (data.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
+        }
 
-	    LocalDateTime startDate = LocalDateTime.parse(start);
-	    LocalDateTime endDate = LocalDateTime.parse(end);
+        return ResponseEntity.ok(data);
+    }
 
-	    Pageable pageable = PageRequest.of(page, size);
+    @GetMapping("/bin/{binId}/range")
+    public ResponseEntity<Page<SensorReadingResponseDTO>>
+    getSensorDataByBinWithRange(
+            @PathVariable Long binId,
 
-	    Page<IoTSensorData> result =
-	            sensorService.getSensorDataByBinAndDateRange(
-	                    binId, startDate, endDate, pageable);
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime start,
 
-	    return ResponseEntity.ok(result);
-	}
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime end,
 
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<SensorReadingResponseDTO> result =
+                sensorService.getSensorDataByBinAndDateRange(
+                        binId, start, end, pageable);
+
+        return ResponseEntity.ok(result);
+    }
 }

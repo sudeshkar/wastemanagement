@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sudeshkar.SmartWasteManagement.Enum.VehicleStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,4 +40,8 @@ public class Vehicle {
 
     @OneToMany(mappedBy = "vehicle")
     private List<RouteAssignment> assignments = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    private List<VehicleLocation> locations = new ArrayList<>();
+
 }

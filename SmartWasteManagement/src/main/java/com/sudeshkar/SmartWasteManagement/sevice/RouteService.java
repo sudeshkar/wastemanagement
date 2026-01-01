@@ -2,6 +2,7 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 
 import java.util.List;
 
+import com.sudeshkar.SmartWasteManagement.dto.AssignZoneToCollectionRDTO;
 import com.sudeshkar.SmartWasteManagement.dto.CollectionRouteResponseDto;
 import com.sudeshkar.SmartWasteManagement.dto.createCollectionRouteDto;
 
@@ -17,4 +18,6 @@ public interface RouteService {
     void deleteRoute(Long routeId);
 
     CollectionRouteResponseDto generateSmartRoute();
+    
+    String assignZone(AssignZoneToCollectionRDTO dto);
 }

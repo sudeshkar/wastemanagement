@@ -1,4 +1,4 @@
-package com.sudeshkar.SmartWasteManagement;
+package com.sudeshkar.SmartWasteManagement.mapper;
 
 import java.util.stream.Collectors;
 

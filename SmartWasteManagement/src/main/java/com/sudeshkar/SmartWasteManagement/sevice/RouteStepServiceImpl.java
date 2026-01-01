@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sudeshkar.SmartWasteManagement.RouteStepMapper;
 import com.sudeshkar.SmartWasteManagement.Repository.BinRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.CollectionRouteRepository;
 import com.sudeshkar.SmartWasteManagement.Repository.RouteStepRepository;
 import com.sudeshkar.SmartWasteManagement.dto.CreateRouteStepRequestDto;
 import com.sudeshkar.SmartWasteManagement.dto.RouteStepResponseDto;
+import com.sudeshkar.SmartWasteManagement.mapper.RouteStepMapper;
 import com.sudeshkar.SmartWasteManagement.model.Bin;
 import com.sudeshkar.SmartWasteManagement.model.CollectionRoute;
 import com.sudeshkar.SmartWasteManagement.model.RouteStep;
@@ -49,6 +49,9 @@ public class RouteStepServiceImpl implements RouteStepService{
 	                request.getStepOrder(),
 	                request.getNote()
 	        );
+	        step.setRoute(route);
+	       
+	        step.setBin(bin);
 
 	        
 	        RouteStep savedStep = stepRepo.save(step);

@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,13 +32,11 @@ public class Device {
     private String firmwareVersion;
     private Boolean active;
 
-    @ManyToOne
-    @JsonManagedReference
-    @JoinColumn(name = "bin_id")
+    @OneToOne
+    @JoinColumn(name = "bin_id", unique = true)
     private Bin bin;
     
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<IoTSensorData> sensorData;
 
 
