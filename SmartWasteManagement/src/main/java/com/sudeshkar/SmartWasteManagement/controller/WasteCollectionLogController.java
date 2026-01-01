@@ -26,6 +26,7 @@ public class WasteCollectionLogController {
     @PostMapping
     public ResponseEntity<?> createLog(@RequestBody CreateWasteCollectionReqDTO dto) {
     	try {
+    		logService.createLog(dto);
     		return ResponseEntity.ok(
                   "Created Successfully"
             );
@@ -41,9 +42,14 @@ public class WasteCollectionLogController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWasteCollectionDTO> getById(
+    public ResponseEntity<?> getById(
             @PathVariable Long id) {
-
-        return ResponseEntity.ok(logService.getLogById(id));
+    	try {
+    		return ResponseEntity.ok(logService.getLogById(id));
+		} catch (Exception e) {
+			
+			return new  ResponseEntity<String>("error "+e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+        
     }
 }

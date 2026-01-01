@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SmartRouteEngineImpl implements SmartRouteEngine {
 	private final BinRepository binRepository;
-    private final ZoneRepository zoneRepository;
+    
 	@Override
 	public CollectionRoute generate() {
 		 // 1️⃣ Get bins that need urgent collection
@@ -25,7 +25,7 @@ public class SmartRouteEngineImpl implements SmartRouteEngine {
             throw new IllegalStateException("No bins require urgent collection");
         }
 
-        // 2️⃣ Determine zone (simple rule)
+        
         Zone zone = criticalBins.get(0).getZone();
 
         // 3️⃣ Create route

@@ -28,24 +28,34 @@ public class RouteController {
 	private final RouteService routeService;
 
 	@PostMapping
-    public ResponseEntity<CollectionRouteResponseDto> createRoute(
+    public ResponseEntity<?> createRoute(
             @RequestBody createCollectionRouteDto dto) {
-
-        return ResponseEntity.ok(routeService.createRoute(dto));
+		try {
+			 return ResponseEntity.ok(routeService.createRoute(dto));
+		} catch (Exception e) {
+			
+			return new ResponseEntity<String>("error "+e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+       
     }
 
-    // GET ALL ROUTES
+    
     @GetMapping
     public ResponseEntity<List<CollectionRouteResponseDto>> getAllRoutes() {
+   
         return ResponseEntity.ok(routeService.getAllRoutes());
     }
 
-    // GET ROUTE BY ID
+     
     @GetMapping("/{id}")
-    public ResponseEntity<CollectionRouteResponseDto> getRouteById(
+    public ResponseEntity<?> getRouteById(
             @PathVariable Long id) {
-
-        return ResponseEntity.ok(routeService.getRouteById(id));
+    	try {
+    		return ResponseEntity.ok(routeService.getRouteById(id));
+		} catch (Exception e) {
+			return new ResponseEntity<String>("error "+e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+        
     }
 
     // UPDATE ROUTE
@@ -64,7 +74,7 @@ public class RouteController {
         return ResponseEntity.noContent().build();
     }
     
-    @PostMapping("/assignZone/{zoneId}")
+    @PostMapping("/assignZone")
     public ResponseEntity<String> assignZone(@RequestBody AssignZoneToCollectionRDTO dto){
     	try {
 			routeService.assignZone(dto);

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sudeshkar.SmartWasteManagement.Enum.VehicleStatus;
+import com.sudeshkar.SmartWasteManagement.dto.CreateVehicleDTO;
 import com.sudeshkar.SmartWasteManagement.dto.VehicleResponseDto;
-import com.sudeshkar.SmartWasteManagement.model.Vehicle;
 import com.sudeshkar.SmartWasteManagement.sevice.VehicleService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,8 @@ public class VehicleController {
 	private final VehicleService vehicleService;
 	
 	@PostMapping
-    public ResponseEntity<String> createVehicle(@RequestBody Vehicle vehicle) {
+    public ResponseEntity<String> createVehicle(@RequestBody CreateVehicleDTO dto) {
+		vehicleService.createVehicle(dto);
         return ResponseEntity.ok("Created Successfully");
     }
 
@@ -62,7 +63,12 @@ public class VehicleController {
      
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVehicle(@PathVariable Long id) {
-        vehicleService.deleteVehicle(id);
-        return ResponseEntity.ok("Deleted");
+    	try {
+    		return ResponseEntity.ok( vehicleService.deleteVehicle(id));
+			
+		} catch (Exception e) {
+			return new ResponseEntity<String>("error "+e.getMessage(),HttpStatus.NOT_FOUND);
+		}
+        
     }
 }

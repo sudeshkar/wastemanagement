@@ -32,13 +32,13 @@ public class Vehicle {
     @Enumerated(EnumType.STRING)
     private VehicleStatus status;
 
-    @OneToOne(mappedBy = "assignedVehicle")
+    @OneToOne(mappedBy = "assignedVehicle", cascade = CascadeType.REMOVE)
     private Driver driver;
 
-    @OneToMany(mappedBy = "vehicle")
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.REMOVE)
     private List<WasteCollectionLog> logs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "vehicle")
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.REMOVE)
     private List<RouteAssignment> assignments = new ArrayList<>();
     
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)

@@ -30,5 +30,9 @@ public class CollectionRoute {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zone_id")
     private Zone zone;
+    
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RouteStep> steps = new ArrayList<>();
+
 
 }

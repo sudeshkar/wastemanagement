@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class CreateRouteStepRequestDto {
 	private Long binId;
-    private int stepOrder;
+    private Integer stepOrder;
     private String note;
 }
