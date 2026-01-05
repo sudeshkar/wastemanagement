@@ -4,6 +4,7 @@ import com.sudeshkar.SmartWasteManagement.Enum.Role;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

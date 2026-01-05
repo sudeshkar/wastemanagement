@@ -72,4 +72,19 @@ public class VehicleServiceImpl implements VehicleService{
 		
 	}
 
+	@Override
+	public List<VehicleResponseDto> getUnassignedVehicles() {
+	    List<Vehicle> vehicles = vehicleRepository.findAll();
+	    List<VehicleResponseDto> dtos = new ArrayList<>();
+
+	    for (Vehicle vehicle : vehicles) {
+	        if (vehicle.getDriver() == null) {
+	            VehicleResponseDto dto = VehicleMapper.toDto(vehicle);
+	            dtos.add(dto);
+	        }
+	    }
+	    return dtos;
+	}
+
+
 }

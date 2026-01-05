@@ -1,16 +1,13 @@
 package com.sudeshkar.SmartWasteManagement.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class ZoneResponseDto {
-	private Long zoneId;
+public class ZoneRequestDto {
+     
     private String zoneName;
     private String description;
+    
 }

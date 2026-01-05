@@ -15,27 +15,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.sudeshkar.SmartWasteManagement.dto.ZoneRequestDto;
+import com.sudeshkar.SmartWasteManagement.dto.ZoneResponseDto;
 import com.sudeshkar.SmartWasteManagement.model.Zone;
 import com.sudeshkar.SmartWasteManagement.sevice.ZoneService;
+import com.sudeshkar.SmartWasteManagement.sevice.ZoneServiceImpl;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/zones")
+@RequiredArgsConstructor
 public class ZoneController {
-	@Autowired
-	private ZoneService zoneService;
+	 
+	private final ZoneService zoneService;
+	
+	
 	@GetMapping
-	public ResponseEntity<List<Zone>> getAllZones(){
-		List<Zone> zones= zoneService.getAllZones();
-		return ResponseEntity.ok(zones);
+	public ResponseEntity<List<ZoneResponseDto>> getAllZones(){
+		 return new ResponseEntity<List<ZoneResponseDto>>(zoneService.getAllZones(),HttpStatus.OK);
 		
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getZoneById(@PathVariable Long id){
 		try {
-			Zone zone =zoneService.getById(id);
-			return ResponseEntity.ok(zone);
+			ZoneResponseDto response =zoneService.getZoneById(id);
+			return ResponseEntity.ok(response);
 		} catch (Exception e) {
 			 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                      .body("Zone ID Not Found: " + id);
@@ -46,35 +52,21 @@ public class ZoneController {
 	}
 	
 	@PostMapping
-	 public ResponseEntity<String> addZone(@RequestBody Map<String,String> body){
-       String name = body.get("name");
-       String description =  body.get("description");
-       Zone zone = new Zone();
-       zone.setZoneName(name);
-       zone.setDescription(description);
-       zoneService.createZone(zone);
+	 public ResponseEntity<String> createZone(@RequestBody ZoneRequestDto dto){
+        zoneService.createZone(dto);
        return new ResponseEntity<String>("Zone Created Successfully",HttpStatus.CREATED);
        
    }	
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<String> updateZone(@RequestBody Map<String, String> body,@PathVariable Long id) {
+	public ResponseEntity<String> updateZone(@RequestBody ZoneRequestDto dto,@PathVariable Long id) {
 		if (!zoneService.existsById(id)) {
 			return new ResponseEntity<String>("Zone Not Found",HttpStatus.NOT_FOUND);
 		}
 	    
 
-	    Zone existingZone = zoneService.getById(id);
+	     zoneService.updateZone(id,dto);
 
-	     
-	    if (body.containsKey("zoneName")) {
-	    	existingZone.setZoneName(body.get("zoneName"));
-	    }
-	    if (body.containsKey("description")) {
-	    	existingZone.setDescription(body.get("description"));
-	    }
-
-	    zoneService.createZone(existingZone);
 
 	    return new ResponseEntity<>("Zone updated successfully", HttpStatus.OK);
 	}
@@ -82,7 +74,7 @@ public class ZoneController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteZone(@PathVariable Long id){
 		if (zoneService.existsById(id)) {
-			zoneService.deleteUser(id);
+			zoneService.deleteZone(id);
 			return new ResponseEntity<>("Deleted Successfully",HttpStatus.OK);
 		}
 		return new ResponseEntity<>("Failed to delete",HttpStatus.NOT_FOUND);

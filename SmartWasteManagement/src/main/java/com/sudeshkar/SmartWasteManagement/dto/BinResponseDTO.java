@@ -11,4 +11,6 @@ public class BinResponseDTO {
     private Double currentFillLevel;
     private String status;
     private String deviceId;
+    private String zoneName;
+    private Long zoneId;
 }

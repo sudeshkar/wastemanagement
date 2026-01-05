@@ -6,4 +6,6 @@ import com.sudeshkar.SmartWasteManagement.model.CollectionRoute;
 
 public interface CollectionRouteRepository extends JpaRepository<CollectionRoute, Long>{
 
+	boolean existsByRouteName(String routeName);
+
 }

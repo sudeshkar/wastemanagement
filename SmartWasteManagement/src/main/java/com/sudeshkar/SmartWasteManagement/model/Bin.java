@@ -46,6 +46,8 @@ public class Bin {
 	
 	@OneToOne(mappedBy = "bin", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Device device;
+	
+	
 
 	
 }

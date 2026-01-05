@@ -15,6 +15,12 @@ public class BinMapper {
         dto.setCapacity(bin.getCapacity());
         dto.setCurrentFillLevel(bin.getCurrentFillLevel());
         dto.setStatus(bin.getStatus());
+        if (bin.getZone()!=null) {
+        	 dto.setZoneName(bin.getZone().getZoneName());
+             dto.setZoneId(bin.getZone().getZoneId());
+             
+		}
+       
 
         
 

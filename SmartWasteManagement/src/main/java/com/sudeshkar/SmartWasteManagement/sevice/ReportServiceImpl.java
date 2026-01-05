@@ -1,5 +1,6 @@
 package com.sudeshkar.SmartWasteManagement.sevice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class ReportServiceImpl implements ReportService {
 	
 	private final WasteCollectionLogRepository logRepo;
     private final AlertRepository alertRepo;
+     
 
     @Override
     public Map<String, Object> dailyReport() {
@@ -39,6 +41,8 @@ public class ReportServiceImpl implements ReportService {
 
         long collectionsInZone = logRepo.findAll()
                 .stream()
+                .filter(log -> log.getBin() != null)
+                .filter(log -> log.getBin().getZone() != null)
                 .filter(log -> log.getBin().getZone().getZoneId().equals(zoneId))
                 .count();
 
@@ -47,6 +51,7 @@ public class ReportServiceImpl implements ReportService {
 
         return map;
     }
+
 
     @Override
     public Map<String,Object> binUsage(Long binId) {
@@ -85,4 +90,20 @@ public class ReportServiceImpl implements ReportService {
 
         return stats;
     }
+
+	@Override
+	public Map<String, Object> getDashboardStats() {
+		Map<String, Object> stats = new HashMap<>();
+        
+        // 1. Metric Cards (Raw numbers)
+        stats.put("totalCollections", logRepo.count());
+        stats.put("activeAlerts", alertRepo.countByAcknowledgedFalse());
+
+        // 2. Chart Data (Lists of DTOs)
+        stats.put("zoneData", logRepo.getWasteVolumeByZone());
+        stats.put("trendData", logRepo.getWeeklyCollectionTrend(LocalDateTime.now().minusDays(7)));
+        stats.put("alertData", alertRepo.getAlertCountByType());
+
+        return stats;
+	}
 }

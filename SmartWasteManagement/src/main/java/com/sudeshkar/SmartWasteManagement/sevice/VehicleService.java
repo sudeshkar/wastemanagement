@@ -23,5 +23,7 @@ public interface VehicleService {
 	String updateStatus(Long id, VehicleStatus status);
 
 	String deleteVehicle(Long id);
+	
+	List<VehicleResponseDto> getUnassignedVehicles();
 
 }

@@ -2,42 +2,20 @@ package com.sudeshkar.SmartWasteManagement.sevice;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.sudeshkar.SmartWasteManagement.dto.ZoneRequestDto;
+import com.sudeshkar.SmartWasteManagement.dto.ZoneResponseDto;
 
-import com.sudeshkar.SmartWasteManagement.Repository.ZoneRepository;
-import com.sudeshkar.SmartWasteManagement.model.Zone;
-
-@Service
-public class ZoneService {
-	@Autowired
-	private ZoneRepository zoneRepository;
+public interface ZoneService {
 	
-	public List<Zone> getAllZones() {
-	  List<Zone> zones = zoneRepository.findAll();
-	  return zones;
-	}
+	List<ZoneResponseDto> getAllZones();
 
-	public Zone getById(Long id) {
-		
-		return zoneRepository.findById(id).orElseThrow(()-> new RuntimeException("Zone Not Found "+id));
-		
-	}
+    ZoneResponseDto getZoneById(Long id);
 
-	public void createZone(Zone zone) {
-		 zoneRepository.save(zone);
-		
-	}
+    void createZone(ZoneRequestDto dto);
 
-	public boolean existsById(Long id) {
-		 return zoneRepository.existsById(id);
-	}
+    void updateZone(Long id, ZoneRequestDto dto);
 
-	public void deleteUser(Long id) {
-		 zoneRepository.deleteById(id);
-		
-	}
-	
-	
+    void deleteZone(Long id);
 
+    boolean existsById(Long id);
 }

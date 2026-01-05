@@ -71,4 +71,10 @@ public class VehicleController {
 		}
         
     }
+    @GetMapping("/unassigned")
+    public ResponseEntity<List<VehicleResponseDto>> getUnassignedVehicles(){
+    	
+    	return ResponseEntity.ok(vehicleService.getUnassignedVehicles());
+    }
+     
 }
