@@ -4,7 +4,7 @@
 
 🔗 Frontend Repository:  
 
-👉 https://github.com/your-username/smart-waste-management-frontend
+👉 https://github.com/sudeshkar/SMW_frontend.git
 
 
 
