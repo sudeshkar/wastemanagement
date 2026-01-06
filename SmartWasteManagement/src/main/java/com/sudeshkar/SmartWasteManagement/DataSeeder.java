@@ -57,7 +57,6 @@ public class DataSeeder implements CommandLineRunner {
     private final Random random = new Random();
 
     @Override
-    @Transactional
     public void run(String... args) throws Exception {
         if (userRepository.count() > 0) return;
 
